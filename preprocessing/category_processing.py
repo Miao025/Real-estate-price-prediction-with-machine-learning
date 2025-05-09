@@ -22,10 +22,10 @@ class EpcProcessing(BaseEstimator, TransformerMixin):
                                 'B': 5,
                                 'A': 6,
                                 'A+': 7,
-                                'A++': 8,
+                                'A++': 8
                                 }
-        X['epcScore_label_encoding'] = X['epcScore'].map(order_epcScore)
-        X = X.drop(columns=['epcScore'])
+            X['epcScore_label_encoding'] = X['epcScore'].map(order_epcScore)
+            X = X.drop(columns=['epcScore'])
         print('end of EpcProcessing')
         return X
     

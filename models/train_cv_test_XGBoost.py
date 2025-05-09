@@ -18,8 +18,8 @@ def train_cv_test_XGBoost(pipeline, X, y):
 
     # train + cross-validation: tuning hyper parameters with grid search
     param_grid = {
-        'model__max_depth': [2, 4, 6, 8],
-        'model__learning_rate': [0.05, 0.1, 0.2, 0.3]
+        'model__max_depth':[2, 4, 6, 8],
+        'model__learning_rate':[0.05, 0.1, 0.2, 0.3]
     }
     grid_search = GridSearchCV(
         pipeline,
@@ -86,3 +86,5 @@ def train_cv_test_XGBoost(pipeline, X, y):
     r2 = r2_score(y_test, y_pred)
     print(f'Test mae: {mae:.2f}')
     print(f'Test R²: {r2:.2f}')
+
+    return best_model
