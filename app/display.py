@@ -1,11 +1,12 @@
 import os
+import sys
 import streamlit as st
 import pandas as pd
 import pickle
 
-
-# Get the absolute path to the current file's directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, ".."))
+sys.path.append(project_root)
 model_path = os.path.join(current_dir, 'model.pkl')
 with open(model_path, 'rb') as f:
     model = pickle.load(f)
