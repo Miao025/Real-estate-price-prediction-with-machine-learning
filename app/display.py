@@ -1,8 +1,13 @@
+import os
 import streamlit as st
 import pandas as pd
 import pickle
 
-with open('model.pkl', 'rb') as f:
+
+# Get the absolute path to the current file's directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(current_dir, 'model.pkl')
+with open(model_path, 'rb') as f:
     model = pickle.load(f)
 
 st.title('House Price Prediction')
