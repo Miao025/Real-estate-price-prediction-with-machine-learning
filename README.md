@@ -60,8 +60,7 @@ This project aims to build a robust machine learning pipeline for predicting rea
 ├── app/
 │   ├── display.py
 │   ├── model.pkl
-│   ├── save_to_pickle.py
-│   └── requirements.txt
+│   └── save_to_pickle.py
 ├── data/
 │   ├── example_data.csv
 │   └── scraper.py
