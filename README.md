@@ -1,127 +1,210 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/twilJ7f4)
-# Regression
+# Real Estate Price Prediction with Machine Learning
 
-- Repository: `challenge-regression`
-- Type of Challenge: `Consolidation`
-- Duration: `5 days`
-- Deadline: `06/05/2025 17:00`
-- Solo Challenge
+A machine learning project to predict real estate prices in Belgium using advanced web scraping, data preprocessing, feature engineering, and model selection techniques. The project utilizes XGBoost and H2O AutoML for regression, and provides visualization and a Streamlit interface for interactive exploration.
 
-## Learning objectives
+---
 
-- Be able to preprocess data for machine learning.
-- Be able to apply a regression in a real context.
-- Be able to understand some of  machine learning.
+## Table of Contents
 
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Data Preprocessing](#data-preprocessing)
+- [Model Training & Evaluation](#model-training--evaluation)
+- [Visualization](#visualization)
+- [Streamlit App](#streamlit-app)
+- [Contributors](#contributors)
+- [Timeline](#timeline)
+- [Evaluation Criteria](#evaluation-criteria)
+- [References](#references)
 
-## The Mission
+---
 
-The real estate company "ImmoEliza" asks you to create a machine learning model to predict prices on Belgium's real estate sales.
+## Project Overview
 
-You have **collected** your data, you have **cleaned** and **analyzed** it a first time!
-So it's time to do some machine learning with it!
+This project aims to build a robust machine learning pipeline for predicting real estate prices in Belgium. It includes:
 
-### Must-have features
+- Data scraping from Immoweb using a custom scraper
+- Data cleaning and preprocessing
+- Feature engineering
+- Model training and evaluation (XGBoost, H2O AutoML)
+- Visualization of data
+- Interactive Streamlit app for predictions
 
-#### Step 1 : Data cleaning
+---
 
-Preprocess the data to be used with machine learning.
+## Features
 
-- You have to handle NANs.
-- You have to handle categorical data.
-- You have to select features.
+- **Data Scraping:**  
+  A custom scraper ([`scraper.py`](data/scraper.py)) to extract property data from Immoweb.
+- **Flexible Data Loading:** Easily load and clean datasets with [`load_and_clean_data`](utils/load_data.py).
+- **Custom Preprocessing:** Modular transformers for missing values ([`DropMissingCols`](preprocessing/missing_processing.py), [`MissingToUnknown`](preprocessing/missing_processing.py)), categorical encoding ([`EpcProcessing`](preprocessing/category_processing.py)) and feature engineering ([`AddRegion`](preprocessing/add_feature.py), [`PostToGDP`](preprocessing/category_processing.py)(external feature mapping from third-party demographic data))
+- **Model Pipelines:** Ready-to-use pipelines for XGBoost ([`pipeline_XGB`](pipelines/pipeline_XGB.py)).
+- **Automated Model Selection:** H2O AutoML integration ([`autoML_h2o`](models/autoML_h2o.py)). This is an alternative to XGBoost model.
+- **Comprehensive Evaluation:** Training, validation, and test metrics with early stopping visualization ([`train_cv_test_XGBoost`](models/train_cv_test_XGBoost.py)).
+- **Visualization Tools:** Boxplots and scatter plots ([`visualization`](utils/visualization.py)).
+- **Streamlit App:** Interactive app for predictions based on XGBoost model ([`display.py`](app/display.py)), also deployed [online ](#link-to-streamlit-app).
 
-#### Step 2: Data split
+---
 
-Now that the dataset is ready, you have to format it for machine learning:
+## Project Structure
 
-- Divide your dataset for training and testing. (`X_train, y_train, X_test, y_test`)
+```
+.
+├── main.py
+├── README.md
+├── requirements.txt
+├── .gitignore
+├── app/
+│   ├── display.py
+│   ├── model.pkl
+│   ├── save_to_pickle.py
+│   └── requirements.txt
+├── data/
+│   ├── example_data.csv
+│   └── scraper.py
+├── models/
+│   ├── autoML_h2o.py
+│   ├── train_cv_test_XGBoost.py
+├── pipelines/
+│   └── pipeline_XGB.py
+├── preprocessing/
+│   ├── add_feature.py
+│   ├── category_processing.py
+│   ├── format_dtype.py
+│   ├── missing_processing.py
+│   └── post_mapping.csv
+├── utils/
+│   ├── load_data.py
+│   └── visualization.py
+```
 
-#### Step 3: Model selection
+---
 
-The dataset is ready. Now let's select a model.
+## Installation
 
-Look at which models make the most sense according to your data.
+1. **Clone the repository:**
+   ```sh
+   git clone <repo-url>
+   cd Real-estate-price-prediction-with-machine-learning
+   ```
 
-#### Step 4: Apply your model
+2. **Create and activate a virtual environment:**
+   ```sh
+   python -m venv env
+   # On Windows:
+   env\Scripts\activate
+   # On macOS/Linux:
+   source env/bin/activate
+   ```
 
-Apply your model on your data:
+3. **Install dependencies:**
+   ```sh
+   pip install -r requirements.txt
+   ```
 
-- Train your model (on the train dataset)
-- Check for predictions (on single lines or the test dataset)
-- Once this works, look into ``sklearn``'s ``Pipeline`` object to make things clean and reusable
+---
 
-#### Step 5: Model evaluation
+## Usage
 
-Let's evaluate your model. The metric we are interested in is the MAE (Mean Absolute Error). Make sure you understand it well. Try to answer those questions:
+### 1. Scrape Data
 
-- How could you improve this result?
-- Which part of the process has the most impact on the results?
-- Are there other metrics which would make more sense to evaluate your model.
+- Use the scraper ([`scraper.py`](data/scraper.py)) to extract property data from Immoweb:
+   ```sh
+   python data/scraper.py
+   ```
+- Note: The `example_data.csv` shows 3 example scraped entries.
 
-You may go back a couple of steps if you want to try other types of approaches.
+### 2. Prepare Data
 
-#### Bonus Step 5.5: Reinventing the wheel
+- Place your dataset (e.g., `data.csv`) in the `data/` directory.
 
-I know some of you will get to a viable model really quickly and will get bored to go back and forth between filtering out outliers and selecting features. The truth is when playing with ML, you only truly understand it when you do it yourself. Here is what you can do:
+### 3. Run Main Pipeline
 
-- Watch what most ML models do to make a prediction
-- Select one which you find elegant
-- Implement it from scratch using at maximum ``numpy``
+- Edit `main.py` to set your dataset path.
+- Run the main script:
+   ```sh
+   python main.py
+   ```
+- This will:
+  - Load and clean data
+  - Visualize data (boxplots, scatter plots)
+  - Train and evaluate XGBoost and H2O AutoML models
 
-Note that some are easier to implement than others.
+### 4. Train and Save Model for Streamlit
 
-#### Step 6: Presentation
+- To train and save the ML model into pickle format for the Streamlit app:
+   ```sh
+   python app/save_to_pickle.py
+   ```
+- This will save a trained model as `your_model.pkl` (An XGBoost model `model.pkl` is pre-trained and provided for you in the `app` folder).
 
-Present your results in front of the group.
+### 5. Launch Streamlit App
 
-- You have to make a nice presentation **with a professional design**.
-- You have **5 minutes** to present (without Q&A). **You can't use more time**, **you can't use less time**.
-- You **CAN'T show code or jupyter notebook** during the presentation.
+- Start the Streamlit app locally for interactive predictions:
+   ```sh
+   streamlit run app/display.py
+   ```
+   The browser will look like this:
 
-## Constraints
+- Alternatively, access the deployed Streamlit app online [here](#link-to-streamlit-app).
 
-### Code style
+---
 
-- Each **function or class** has to be **typed**
-- Each **function or class** has to contain a **docstring**
-- Your code should be **commented** when necessary.
-- Your code should be **cleaned of any unused code**.
+## Data Preprocessing
 
-## Deliverables
+- **Missing Value Handling:**  
+  Custom transformers like [`DropMissingCols`](preprocessing/missing_processing.py) and [`MissingToUnknown`](preprocessing/missing_processing.py) handle missing values based on thresholds and column types.
+- **Categorical Encoding:**  
+  [`EpcProcessing`](preprocessing/category_processing.py) ordinal encodes EPC scores and handles invalid values.
+- **Feature Engineering:**  
+  Additional feature `Region` can be added via [`add_feature.py`](preprocessing/add_feature.py). [`PostToGDP`](preprocessing/category_processing.py) uses thrid-party GDP dataset [`post_mapping`](preprocessing/post_mapping.csv) to encode postal codes with corresponding GDP per capita values.
 
-1. Pimp up the README file:
-   - Description
-   - Installation
-   - Usage
-   - (Visuals)
-   - (Contributors)
-   - (Timeline)
-   - (Personal situation)
-2. Present your results in front of the group in **5mins max**.
+---
 
-### Steps
+## Model Training & Evaluation
 
-1. Create the repository
-2. Study the request (What & Why ?)
-3. Identify technical challenges (How ?)
+- **XGBoost Pipeline:**  
+  Defined in [`pipeline_XGB`](pipelines/pipeline_XGB.py), using MAE as the loss function.
+- **Training & Cross-Validation:**  
+  [`train_cv_test_XGBoost`](models/train_cv_test_XGBoost.py) handles training, cross-validation with grid-search, early stopping with visualization, and evaluation (MAE, R²).
+- **AutoML:**  
+  [`autoML_h2o`](models/autoML_h2o.py) runs H2O AutoML, ranks models by MAE, reports top models' features and hyperparameters, and handels evaluation (MAE, R²).
 
-## Evaluation criteria
+---
 
-| Criteria       | Indicator                                     | Yes/No |
-| -------------- | --------------------------------------------- | ------ |
-| 1. Is complete | Know how to answer all the above questions.   | [ ]    |
-|                | `pandas` and `matplotlib`/`seaborn` are used. | [ ]    |
-|                | All the above steps were followed.            | [ ]    |
-|                | A nice README is available.                   | [ ]    |
-|                | Your model is able to predict something.      | [ ]    |
-| 2. Is good     | You used typing and docstring.                | [ ]    |
-|                | Your code is formatted (PEP8 compliant).      | [ ]    |
-|                | No unused file/code is present.               | [ ]    |
+## Visualization
 
-## Quotes
+- **Boxplots & Scatter Plots:**  
+  Explore feature distributions and relationships of categorial and numerical variables to property price, respectively in boxplots and scatter plots.
+- **Early Stopping Graphs:**  
+  Plot training and validation MAE over boosting rounds for XGBoost.
 
-“The lottery is a tax on people who don't understand the statistics.”
-_- Anonymous_
+---
 
-![You've got this!](https://media.giphy.com/media/5wWf7GMbT1ZUGTDdTqM/giphy.gif)
+## Streamlit App
+
+- **Model Loading:**  
+  Loads the model from `model.pkl` generated by [`save_to_pickle.py`](app/save_to_pickle.py).
+- **Interactive Predictions:**  
+  Run Streamlit app ([`display.py`](app/display.py)) to input property features and get price predictions using the trained model locally.
+- **Deployed App:**  
+  Access the deployed Streamlit app [online](#link-to-streamlit-app).
+
+---
+
+## Contributor
+
+- Miao
+
+---
+
+## References
+
+- [XGBoost Documentation](https://xgboost.readthedocs.io/)
+- [H2O AutoML Documentation](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html)
+- [Streamlit Documentation](https://docs.streamlit.io/)
+- [scikit-learn Documentation](https://scikit-learn.org/stable/)
+- [pandas Documentation](https://pandas.pydata.org/docs/)
